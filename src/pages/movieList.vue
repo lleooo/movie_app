@@ -25,7 +25,7 @@ export default {
     return {
       movieData: [],
       imgPath: "https://image.tmdb.org/t/p/w500",
-      love:[]
+      love: [],
     };
   },
 
@@ -40,12 +40,26 @@ export default {
       });
     },
     loveCheck(d, e) {
-      this.$store.dispatch("addLoveMovie", [d.id, e]);
+      if (this.love.includes(d.id)) {
+        this.love = this.love.filter((element) => {
+          return element != d.id;
+        });
+        localStorage.setItem("love-movie", this.love);
+        alert("從最愛移除");
+        console.log(this.love)
+        e.target.className = "love";
+      } else {
+        this.love.push(d.id);
+        localStorage.setItem("love-movie", this.love);
+        alert("加入最愛");
+        console.log(this.love)
+        e.target.className = "love-active";
+      }
     },
   },
   watch: {},
 
-  mounted() {
+  created() {
     fetch(
       "https://api.themoviedb.org/3/movie/popular?api_key=e147528034b3b1192f389af6460b3ad9&language=zh-TW&page=1"
     )
@@ -55,18 +69,23 @@ export default {
       .then((data) => {
         this.movieData = data.results;
         console.log("電影列表來了", this.movieData);
-      })
+      });
   },
-  
-  updated(){
-    this.movieData.forEach(e=>{
-          this.$store.state.loveMovie.forEach(a=>{
-            if(e.id==a){
-              this.$refs[e.id][0].className='love-active'
-            }
-          })
-        })
-    
+
+  mounted() {
+    let x=localStorage.getItem("love-movie").split(',')
+    for(let i=0;i<x.length;i++){
+      this.love.push(Number(x[i]))
+    }
+    console.log(this.love)
+  },
+
+  updated() {
+    this.movieData.forEach((e) => {
+      if (localStorage.getItem("love-movie").includes(e.id)) {
+        this.$refs[e.id][0].className = "love-active";
+      }
+    });
   },
   beforeDestroy() {
     console.log("電影列表死了", this.movieData);

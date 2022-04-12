@@ -1,9 +1,11 @@
 <template>
-  <div class="box" >
+  <div class="box">
     <div class="detail">
       <div class="pic">
         <img :src="imgPath + detailData.poster_path" />
-        <div class='love' @click="loveCheck(detailData.id,$event)" ref="love">❤</div>
+        <div class="love" @click="loveCheck(detailData.id, $event)" ref="love">
+          ❤
+        </div>
       </div>
       <div class="content">
         <div id="title">
@@ -22,7 +24,7 @@
           <h4>{{ detailData.overview }}</h4>
         </div>
         <div class="back">
-        <button @click="backToList">Back to Movies</button>
+          <button @click="backToList">Back to Movies</button>
         </div>
       </div>
     </div>
@@ -36,29 +38,40 @@ export default {
     return {
       detailData: [],
       imgPath: "https://image.tmdb.org/t/p/w500",
+      love:[]
     };
   },
-  methods:{
-    backToList(){
-      this.$router.back()
-      this.$store.commit('change',false)
-    },
-    
-    popstate(){
-      this.$store.commit('change',false)
+  methods: {
+    backToList() {
+      this.$router.back();
+      this.$store.commit("change", false);
     },
 
-    loveCheck(id,e){
-      this.$store.dispatch('addLoveMovie',[id,e])
-      // console.log(this.$refs.love.className=='love-active')
-      if(this.$refs.love.className=='love-active'){
-        this.$refs.love.style.color='red'
-      }else{
-         this.$refs.love.style.color='white'
+    popstate() {
+      this.$store.commit("change", false);
+    },
+
+    loveCheck(d, e) {
+      if(this.love.includes(d)){
+        this.love = this.love.filter((element) => {
+          return element != d;
+        });
+        localStorage.setItem("love-movie", this.love);
+        alert("從最愛移除");
+        e.target.className = "love";
+        console.log(this.love,e.target)
       }
-    }
+      else {
+        this.love.push(d);
+        localStorage.setItem("love-movie", this.love);
+        alert("加入最愛");
+        e.target.className = "love-active";
+        console.log(this.love,e.target)
+      }
+    },
   },
-  mounted() {
+
+  created() {
     fetch(
       "https://api.themoviedb.org/3/movie/" +
         this.$route.query.id +
@@ -70,18 +83,25 @@ export default {
       .then((data) => {
         this.detailData = data;
         console.log("電影Detail來了", data);
+        console.log(this.$refs)
+        let x = localStorage.getItem("love-movie").split(",");
+        for (let i = 0; i < x.length; i++) {
+          this.love.push(Number(x[i]))
+          if (this.detailData.id == Number(x[i])) {
+            this.$refs.love.className = "love-active";
+          } else {
+            this.$refs.love.className = "love";
+          }
+        }
       });
-    window.addEventListener('popstate', this.popstate);
-    if(this.$store.state.loveMovie.includes(Number(this.$route.query.id))){
-      this.$refs.love.style.color='red'
-    }
-    else{
-      this.$refs.love.style.color='white'
-    }
   },
-  beforeDestroy(){
-    console.log('電影Detail要死了')
-  }
+
+  mounted() {
+    window.addEventListener("popstate", this.popstate);
+  },
+  beforeDestroy() {
+    console.log("電影Detail要死了");
+  },
 };
 </script>
 
@@ -170,40 +190,42 @@ button:hover {
   background-color: rgb(214, 128, 66);
   color: aliceblue;
 }
-
-.pic .love-active{
+.pic .love {
+  color: white;
+}
+.pic .love-active {
   color: red;
 }
 
 /********************************************** */
 
-@media screen and (max-width: 768px){
-  .box{
+@media screen and (max-width: 768px) {
+  .box {
     height: auto;
   }
-  .pic{
+  .pic {
     margin: auto;
     width: 60%;
   }
-  .detail{
+  .detail {
     width: 100%;
     display: flex;
     flex-direction: column;
   }
 
-  .content{
+  .content {
     width: 100%;
     padding: 0;
   }
 
-  #title{
+  #title {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  #info{
+  #info {
     width: 100%;
     box-sizing: border-box;
     margin: 0;
@@ -211,19 +233,19 @@ button:hover {
     justify-content: center;
   }
 
-  #info h4{
+  #info h4 {
     font-size: 14px;
-    letter-spacing:0.1em;
+    letter-spacing: 0.1em;
   }
 
-  #outline{
+  #outline {
     box-sizing: border-box;
     padding: 0 2em;
     margin-top: 2em;
     height: 15%;
   }
-  
-  .back{
+
+  .back {
     display: flex;
     justify-content: center;
     position: relative;

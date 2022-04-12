@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 
 import movieList from '../pages/movieList'
 import tvList from '../pages/tvList'
-import actorList from '../pages/actorList'
 import movieDetail from '../pages/movieDetail'
 import tvDetail from '../pages/tvDetail'
 export default new VueRouter({
@@ -11,13 +10,6 @@ export default new VueRouter({
         {
             path: '/',
             component: movieList,
-            // children:[
-            //     {
-            //         name:'movieDetail',
-            //         path:'movieDetail',
-            //         component:movieDetail,
-            //     }
-            // ]
         },
         {
             path:'/movieDetail',
@@ -33,9 +25,5 @@ export default new VueRouter({
                 }
             ]
         },
-        {
-            path: '/actor',
-            component: actorList
-        }
     ]
 })

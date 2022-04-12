@@ -5,6 +5,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 const actions = {
     addLoveMovie(context, value) {
+        console.log(context,value)
         if (context.state.loveMovie.includes(value[0]) == true) {
             value[1].target.className = 'love'
             alert('從最愛移除')
