@@ -73,6 +73,7 @@ export default {
   },
 
   mounted() {
+    if(localStorage.getItem("love-movie")==null)return
     let x=localStorage.getItem("love-movie").split(',')
     for(let i=0;i<x.length;i++){
       this.love.push(Number(x[i]))
@@ -82,6 +83,7 @@ export default {
 
   updated() {
     this.movieData.forEach((e) => {
+      if(localStorage.getItem("love-movie")==null)return
       if (localStorage.getItem("love-movie").includes(e.id)) {
         this.$refs[e.id][0].className = "love-active";
       }

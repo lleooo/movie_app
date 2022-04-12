@@ -3,9 +3,8 @@
     <h3>MOVIEAPP</h3>
     <div class="type">
       <router-link to="/" @click.native="show">Movie</router-link>
-      <!-- <router-link to="/tv" @click.native="show">TV</router-link> -->
+      <router-link to="/loveMovies" @click.native="show">loves</router-link>
     </div>
-    <!-- <input type="text" placeholder="輸入片名"> -->
   </div>
 </template>
 
