@@ -8,10 +8,12 @@
         v-for="(d, index) in movieData"
         :key="index"
       >
-        <div class="movie-img">
-          <img :src="imgPath + d.poster_path" @click="detail(d, $event)" />
-          <div class="love" @click="loveCheck(d, $event)" :ref="d.id">❤</div>
-        </div>
+        <observer @on-change="onChange" class="lazy">
+          <div class="movie-img">
+            <img :data-src="imgPath + d.poster_path" @click="detail(d, $event)" />
+            <div class="love" @click="loveCheck(d, $event)" :ref="d.id">❤</div>
+          </div>
+        </observer>
         <h1>{{ d.original_title }}</h1>
       </div>
     </div>
@@ -19,7 +21,9 @@
 </template>
 
 <script>
+import Observer from "vue-intersection-observer";
 export default {
+  components: { Observer },
   name: "movieList",
   data() {
     return {
@@ -30,6 +34,15 @@ export default {
   },
 
   methods: {
+    onChange(entry,unoberserve) {
+      if(entry.isIntersecting){
+        const image=entry.target;
+        const x=image.children[0].childNodes[0].getAttribute('data-src')
+        image.children[0].childNodes[0].src=x
+        unoberserve()
+        console.log('aa')
+      }
+    },
     detail(d, e) {
       this.$store.commit("change", true);
       this.$router.push({
@@ -46,13 +59,13 @@ export default {
         });
         localStorage.setItem("love-movie", this.love);
         alert("從最愛移除");
-        console.log(this.love)
+        console.log(this.love);
         e.target.className = "love";
       } else {
         this.love.push(d.id);
         localStorage.setItem("love-movie", this.love);
         alert("加入最愛");
-        console.log(this.love)
+        console.log(this.love);
         e.target.className = "love-active";
       }
     },
@@ -73,17 +86,17 @@ export default {
   },
 
   mounted() {
-    if(localStorage.getItem("love-movie")==null)return
-    let x=localStorage.getItem("love-movie").split(',')
-    for(let i=0;i<x.length;i++){
-      this.love.push(Number(x[i]))
+    if (localStorage.getItem("love-movie") == null) return;
+    let x = localStorage.getItem("love-movie").split(",");
+    for (let i = 0; i < x.length; i++) {
+      this.love.push(Number(x[i]));
     }
-    console.log(this.love)
+    console.log(this.love);
   },
 
   updated() {
     this.movieData.forEach((e) => {
-      if(localStorage.getItem("love-movie")==null)return
+      if (localStorage.getItem("love-movie") == null) return;
       if (localStorage.getItem("love-movie").includes(e.id)) {
         this.$refs[e.id][0].className = "love-active";
       }

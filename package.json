@@ -9,7 +9,10 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
-    "vue": "^2.6.11",
+    "intersect": "^1.0.1",
+    "vue": "^2.6.14",
+    "vue-intersect": "^1.1.6",
+    "vue-intersection-observer": "^0.1.8",
     "vue-router": "^3.5.3",
     "vuex": "^3.6.2"
   },
